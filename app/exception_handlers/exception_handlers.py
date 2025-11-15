@@ -11,6 +11,16 @@ class UserNotFoundException(HTTPException):
         super().__init__(detail=detail, status_code=status_code)
 
 
+class AccessTokenExpiredException(HTTPException):
+    def __init__(self, detail: str = 'Access token expired', status_code: int = 401):
+        super().__init__(detail=detail, status_code=status_code)
+
+
+class InvalidAccessTokenException(HTTPException):
+    def __init__(self, detail: str = 'Invalid access token', status_code: int = 401):
+        super().__init__(detail=detail, status_code=status_code)
+
+
 class RefreshTokenExpiredException(HTTPException):
     def __init__(self, detail: str = 'Refresh token expired', status_code: int = 401):
         super().__init__(detail=detail, status_code=status_code)
@@ -18,4 +28,9 @@ class RefreshTokenExpiredException(HTTPException):
 
 class InvalidRefreshTokenException(HTTPException):
     def __init__(self, detail: str = 'Invalid refresh token', status_code: int = 401):
+        super().__init__(detail=detail, status_code=status_code)
+
+
+class NotificationNotFoundException(HTTPException):
+    def __init__(self, detail: str = 'Error! The notification was not found.', status_code: int = 404):
         super().__init__(detail=detail, status_code=status_code)

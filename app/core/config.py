@@ -34,9 +34,4 @@ settings = Settings()
 LOG_DIR = BASE_DIR / "logs"
 LOG_FILE_PATH = LOG_DIR / "prod.log"
 
-print(
-    settings.POSTGRES_HOST,
-    settings.POSTGRES_PORT,
-    settings.POSTGRES_USER,
-    settings.POSTGRES_DB
-)
+ALGO = "HS256"

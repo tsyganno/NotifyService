@@ -3,36 +3,36 @@ from typing import Optional, List
 from datetime import datetime
 from enum import Enum
 
-#
-# class NotificationType(str, Enum):
-# like = "like"
-# comment = "comment"
-# repost = "repost"
-#
-#
-# class UserOut(BaseModel):
-# id: int
-# username: str
-# avatar_url: str
-#
-#
+
+class NotificationType(str, Enum):
+    like = "like"
+    comment = "comment"
+    repost = "repost"
+
+
+class UserOut(BaseModel):
+    id: int
+    username: str
+    avatar_url: str
+
+
 # class Config:
 # orm_mode = True
-#
-#
-# class NotificationIn(BaseModel):
-# type: NotificationType
-# text: str = Field(min_length=1, max_length=1000)
-#
-#
-# class NotificationOut(BaseModel):
-# id: int
-# user_id: int
-# type: NotificationType
-# text: str
-# created_at: datetime
-# user: UserOut
-#
+
+
+class NotificationCreate(BaseModel):
+    type: NotificationType
+    text: str
+
+
+class NotificationOut(BaseModel):
+    id: int
+    user_id: int
+    type: NotificationType
+    text: str
+    created_at: datetime
+    user: UserOut
+
 #
 # class Config:
 # orm_mode = True
@@ -41,9 +41,6 @@ from enum import Enum
 # class PaginatedNotifications(BaseModel):
 # total: int
 # items: List[NotificationOut]
-#
-#
-# # Auth schemas
 
 
 class LoginRegisterIn(BaseModel):

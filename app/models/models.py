@@ -12,7 +12,7 @@ class User(Model):
     """ Пользователи """
     id = fields.IntField(pk=True)
     username = fields.CharField(50, unique=True)
-    password_hash = fields.CharField(128)
+    password = fields.CharField(128)
     avatar_url = fields.CharField(255, default="https://example.com/default-avatar.png")
     created_at = fields.DatetimeField(auto_now_add=True)
     notifications: fields.ReverseRelation["Notification"]

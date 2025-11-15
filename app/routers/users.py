@@ -1,8 +1,6 @@
 import jwt
 
-from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordRequestForm # для реквест-формы нам нужно установить доп. библиотеку командой pip install python-multipart
-from typing import Annotated
+from fastapi import APIRouter
 
 from app.core.config import settings
 from app.core.security import create_access_token, create_refresh_token
@@ -17,11 +15,11 @@ user_router = APIRouter(prefix="/auth")
 
 @user_router.post('/login', response_model=AccessRefreshToken)
 async def login(payload: LoginRegisterIn):
-    """ Роут для получения JWT-токена (так работает логин) """
+    """ Роут для получения access токенов """
     user_data_from_db = await search_user_in_the_database(payload.username)
     if not user_data_from_db:
         raise UserNotFoundException()
-    if user_data_from_db.username is None or payload.password != user_data_from_db.password_hash:
+    if user_data_from_db.username is None or payload.password != user_data_from_db.password:
         raise UserNotFoundException()
     access = create_access_token(user_data_from_db.id)
     refresh = create_refresh_token(user_data_from_db.id)
@@ -42,6 +40,7 @@ async def create_new_user(payload: LoginRegisterIn):
 
 @user_router.post("/refresh", response_model=AccessToken)
 async def refresh(token: dict):
+    """ Роут для получения refresh токенов """
     try:
         payload = jwt.decode(token.get("refresh"), settings.SECRET_KEY, algorithms=["HS256"])
         if payload.get("type") != "refresh":
