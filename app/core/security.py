@@ -20,7 +20,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 def get_password_hash(password: str) -> str:
     """ Получение хеш-пароля """
-    logger.debug(f"Создание хеша пароля для пользователя")
+    logger.info(f"Создание хеша пароля для пользователя")
     return pwd_context.hash(password)
 
 
@@ -28,7 +28,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """ Проверка пароля """
     try:
         result = pwd_context.verify(plain_password, hashed_password)
-        logger.debug(f"Проверка пароля: {'успешно' if result else 'неудачно'}")
+        logger.info(f"Проверка пароля: {'успешно' if result else 'неудачно'}")
         return result
     except Exception as e:
         logger.error(f"Ошибка проверки пароля: {e}")

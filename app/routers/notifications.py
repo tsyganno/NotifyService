@@ -5,8 +5,8 @@ from app.models.models import User
 from app.core.logging import logger
 from app.core.security import get_current_user
 from app.services.other_functions import create_notification_out
-from app.rest_models.rest_models import NotificationOut, NotificationCreate, UserOut
-from app.db_services.crud import write_notification_to_the_database, search_notifications_user_in_the_database, \
+from app.rest_models.rest_models import NotificationOut, NotificationCreate
+from app.db_services.crud import write_notification_to_the_database, search_notifications_user_in_the_database_with_cache, \
     delete_notification_user_by_id_from_the_database
 
 notification_router = APIRouter(prefix="/notifications")
@@ -26,8 +26,8 @@ async def create_notification(notification_data: NotificationCreate, user: User 
 @notification_router.get("", response_model=List[NotificationOut])
 async def get_notifications(user: User = Depends(get_current_user), limit: int = Query(10, ge=1), offset: int = Query(0, ge=0)):
     """ Роут получения списка своих уведомлений с пагинацией """
-    notifications = await search_notifications_user_in_the_database(user, offset, limit)
-    logger.debug(f"Найдено уведомлений: {len(notifications)}")
+    notifications = await search_notifications_user_in_the_database_with_cache(user, offset, limit)
+    logger.info(f"Найдено уведомлений: {len(notifications)}")
     return [create_notification_out(n, user) for n in notifications]
 
 

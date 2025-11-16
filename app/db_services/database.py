@@ -14,8 +14,11 @@ TORTOISE_ORM = {
 
 
 async def init_db():
+    """Инициализация БД и создание таблиц"""
     await Tortoise.init(config=TORTOISE_ORM)
+    await Tortoise.generate_schemas(safe=True)
 
 
 async def close_db():
+    """Закрытие соединений с БД"""
     await Tortoise.close_connections()

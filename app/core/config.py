@@ -6,17 +6,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent  # корень про�
 
 
 class Settings(BaseSettings):
+    # PostgreSQL настройки
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
     POSTGRES_HOST: str
     POSTGRES_PORT: int
 
+    # JWT настройки
     SECRET_KEY: str
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     REFRESH_TOKEN_EXPIRE_DAYS: int
 
+    # Redis настройки
     REDIS_URL: str
+    CACHE_EXPIRE_SECONDS: int  # 5 минут по умолчанию
 
     class Config:
         env_file = BASE_DIR / ".env"  # имя файла с переменными окружения

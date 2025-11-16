@@ -50,7 +50,7 @@ async def create_new_user(payload: LoginRegisterIn):
 @user_router.post("/refresh", response_model=AccessToken)
 async def refresh(token: RefreshIn):
     """ Роут для получения refresh токенов """
-    logger.debug("Обновление access токена")
+    logger.info("Обновление access токена")
     try:
         payload = jwt.decode(token.refresh, settings.SECRET_KEY, algorithms=["HS256"])
         if payload.get("type") != "refresh":
@@ -58,7 +58,6 @@ async def refresh(token: RefreshIn):
             raise InvalidRefreshTokenException()
         user_id = int(payload.get("sub"))
         access = create_access_token(user_id)
-        logger.info(f"Access токен обновлен для пользователя: {user_id}")
         return {"access": access}
     except jwt.ExpiredSignatureError:
         logger.warning("Refresh токен истек")
