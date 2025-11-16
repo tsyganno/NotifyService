@@ -1,7 +1,7 @@
 import pytest
 from tortoise import Tortoise
 from app.models.models import User
-from app.core.security import get_password_hash
+from app.core.security import auth_service
 from app.main import app
 from fastapi.testclient import TestClient
 
@@ -22,7 +22,7 @@ async def test_create_notification(client):
 
     try:
         # Создаем пользователя
-        password_hash = get_password_hash("password123")
+        password_hash = auth_service.get_password_hash("password123")
         user = await User.create(username="notification_user", password=password_hash)
 
         # Логинимся для получения токена

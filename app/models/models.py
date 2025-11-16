@@ -1,11 +1,6 @@
 from tortoise import Model, fields
-from enum import Enum
 
-
-class NotificationType(str, Enum):
-    like = "like"
-    comment = "comment"
-    repost = "repost"
+from app.core.enums import NotificationType
 
 
 class User(Model):

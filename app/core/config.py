@@ -33,3 +33,14 @@ LOG_DIR = BASE_DIR / "logs"
 LOG_FILE_PATH = LOG_DIR / "prod.log"
 
 ALGO = "HS256"
+
+TORTOISE_ORM = {
+    "connections": {
+        "default": f"postgres://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"},
+    "apps": {
+        "models": {
+            "models": ["app.models.models", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+}

@@ -2,7 +2,7 @@ from tortoise.exceptions import DoesNotExist
 
 from app.models.models import User, Notification
 from app.core.logging import logger
-from app.services.cache_service import get_cached_notifications, set_cached_notifications, invalidate_user_cache
+from app.services.cache import get_cached_notifications, set_cached_notifications, invalidate_user_cache
 from app.services.other_functions import create_notification_out
 from app.exception_handlers.exception_handlers import NotificationNotFoundException
 

@@ -1,11 +1,12 @@
 import uvicorn
 
 from fastapi import FastAPI
+from tortoise import Tortoise
 
 from app.core.redis import init_redis, close_redis, get_redis
 from app.routers.users import user_router
 from app.routers.notifications import notification_router
-from app.db_services.database import init_db, close_db
+from app.core.config import TORTOISE_ORM
 from app.core.logging import logger
 
 
@@ -16,11 +17,22 @@ app.include_router(user_router)
 app.include_router(notification_router)
 
 
+async def init_db():
+    """Инициализация БД и создание таблиц"""
+    await Tortoise.init(config=TORTOISE_ORM)
+    await Tortoise.generate_schemas(safe=True)
+
+
+async def close_db():
+    """Закрытие соединений с БД"""
+    await Tortoise.close_connections()
+
+
 @app.on_event("startup")
 async def startup_event():
     """Запуск приложения"""
-    await init_db()
     await init_redis()
+    await init_db()
     logger.info("Приложение запущено")
 
 
@@ -46,7 +58,6 @@ async def full_health_check():
         redis_client = get_redis()
         await redis_client.ping()
         # Проверка БД (простая проверка подключения)
-        from tortoise import Tortoise
         await Tortoise.get_connection("default").execute_query("SELECT 1")
         return {"status": "healthy", "database": "connected", "redis": "connected"}
     except Exception as e:

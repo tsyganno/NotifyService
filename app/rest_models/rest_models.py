@@ -1,12 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
-from enum import Enum
 
-
-class NotificationType(str, Enum):
-    like = "like"
-    comment = "comment"
-    repost = "repost"
+from app.core.enums import NotificationType
 
 
 class UserOut(BaseModel):

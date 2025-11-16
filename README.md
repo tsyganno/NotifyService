@@ -41,7 +41,7 @@ CACHE_EXPIRE_SECONDS=300
 ```
 ### 3. Запуск через Docker
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 ### 4. Проверить
 * API: [http://localhost:8000/health](http://localhost:8000/health)

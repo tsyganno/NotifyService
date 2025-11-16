@@ -1,7 +1,7 @@
 import pytest
 from tortoise import Tortoise
 from app.models.models import User
-from app.core.security import get_password_hash, verify_password
+from app.core.security import auth_service
 from app.main import app
 from fastapi.testclient import TestClient
 
@@ -47,7 +47,7 @@ async def test_login_success(client):
 
     try:
         # Создаем пользователя
-        password_hash = get_password_hash("password123")
+        password_hash = auth_service.get_password_hash("password123")
         await User.create(username="existinguser", password=password_hash)
 
         response = client.post(
@@ -73,7 +73,7 @@ async def test_login_wrong_password(client):
     await Tortoise.generate_schemas()
 
     try:
-        password_hash = get_password_hash("correct_password")
+        password_hash = auth_service.get_password_hash("correct_password")
         await User.create(username="testuser", password=password_hash)
 
         response = client.post(
