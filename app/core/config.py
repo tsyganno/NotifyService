@@ -36,7 +36,7 @@ ALGO = "HS256"
 
 TORTOISE_ORM = {
     "connections": {
-        "default": f"postgres://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}"},
+        "default": f"postgres://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@db:5432/{settings.POSTGRES_DB}"},
     "apps": {
         "models": {
             "models": ["app.models.models", "aerich.models"],
