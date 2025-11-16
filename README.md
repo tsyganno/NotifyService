@@ -82,7 +82,7 @@ app/
 ## 🔐 Аутентификация
 * Регистрация пользователя
 ```bash
-POST /api/v1/auth/register
+POST http://localhost:8000/auth/register
 Content-Type: application/json
 
 {
@@ -92,7 +92,7 @@ Content-Type: application/json
 ```
 * Вход в систему
 ```bash
-POST /api/v1/auth/login
+POST http://localhost:8000/auth/login
 Content-Type: application/json
 
 {
@@ -110,7 +110,7 @@ Content-Type: application/json
 ## 📨 Работа с уведомлениями
 * Создание уведомления
 ```bash
-POST /api/v1/notifications
+POST http://localhost:8000/notifications
 Authorization: Bearer {token}
 Content-Type: application/json
 
@@ -121,12 +121,12 @@ Content-Type: application/json
 ```
 * Получение уведомлений
 ```bash
-GET /api/v1/notifications
+GET http://localhost:8000/notifications
 Authorization: Bearer {token}
 ```
 * Удаление уведомления
 ```bash
-DELETE /api/v1/notifications/{notification_id}
+DELETE http://localhost:8000/notifications/{notification_id}
 Authorization: Bearer {token}
 ```
 ***
