@@ -103,10 +103,26 @@ Content-Type: application/json
 * Ответ:
 ```bash
 {
-    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-    "token_type": "bearer"
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzd...",
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJz...",
+    "user_id": 1
 }
 ```
+* Обновление access токена
+```bash
+POST http://localhost:8000/auth/refresh
+Content-Type: application/json
+
+{
+    "refresh": "eyJhbGciOiwiZXhwIjoxNzVNEyB0QlR9HGp2058qs..."
+}
+```
+* Ответ:
+```bash
+{
+    "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+}
+``` 
 ## 📨 Работа с уведомлениями
 * Создание уведомления
 ```bash
