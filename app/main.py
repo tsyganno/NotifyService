@@ -1,14 +1,11 @@
 import uvicorn
-import asyncio
-import time
+
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
 
 from app.routers.users import user_router
 from app.routers.notifications import notification_router
 from app.db_services.database import init_db, close_db
-from app.exception_handlers.exception_handlers import UserExists, UserNotFoundException, RefreshTokenExpiredException, \
-    InvalidRefreshTokenException
+from app.core.logging import logger
 
 
 app = FastAPI(title="NotifyService")
@@ -22,13 +19,13 @@ app.include_router(notification_router)
 @app.on_event("startup")
 async def startup_event():
     await init_db()
-    print("✅ Database connected successfully")
+    logger.info("База данных успешно подключена")
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
     await close_db()
-    print("✅ Database connections closed")
+    logger.info("Подключения к базе данных закрыты")
 
 
 # Для тестирования
@@ -43,5 +40,4 @@ async def health_check():
 
 
 if __name__ == "__main__":
-    import uvicorn
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

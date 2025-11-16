@@ -1,6 +1,3 @@
-import pytz
-
-from datetime import datetime
 from pathlib import Path
 from pydantic_settings import BaseSettings
 
@@ -24,9 +21,6 @@ class Settings(BaseSettings):
     class Config:
         env_file = BASE_DIR / ".env"  # имя файла с переменными окружения
 
-
-irkutsk_tz = pytz.timezone("Asia/Irkutsk")
-created_at_irkutsk_tz = datetime.now(irkutsk_tz)
 
 # Создаём объект settings для использования в проекте
 settings = Settings()

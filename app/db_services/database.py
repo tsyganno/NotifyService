@@ -15,7 +15,6 @@ TORTOISE_ORM = {
 
 async def init_db():
     await Tortoise.init(config=TORTOISE_ORM)
-    # await Tortoise.generate_schemas() # можно использовать для быстрого старта
 
 
 async def close_db():

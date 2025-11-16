@@ -3,11 +3,12 @@ import jwt
 from fastapi import APIRouter
 
 from app.core.config import settings
-from app.core.security import create_access_token, create_refresh_token
+from app.core.logging import logger
+from app.core.security import create_access_token, create_refresh_token, get_password_hash, verify_password
 from app.db_services.crud import search_user_in_the_database, write_user_to_the_database
-from app.rest_models.rest_models import AccessRefreshToken, LoginRegisterIn, AccessToken
-from app.exception_handlers.exception_handlers import UserExists, UserNotFoundException, RefreshTokenExpiredException, \
-    InvalidRefreshTokenException
+from app.rest_models.rest_models import AccessRefreshToken, LoginRegisterIn, AccessToken, RefreshIn
+from app.exception_handlers.exception_handlers import UserExistsException, UserNotFoundException, \
+    RefreshTokenExpiredException, InvalidRefreshTokenException
 
 
 user_router = APIRouter(prefix="/auth")
@@ -16,39 +17,52 @@ user_router = APIRouter(prefix="/auth")
 @user_router.post('/login', response_model=AccessRefreshToken)
 async def login(payload: LoginRegisterIn):
     """ Роут для получения access токенов """
-    user_data_from_db = await search_user_in_the_database(payload.username)
-    if not user_data_from_db:
+    logger.info(f"Попытка входа пользователя: {payload.username}")
+    user = await search_user_in_the_database(payload.username)
+    if not user:
+        logger.warning(f"Пользователь не найден: {payload.username}")
         raise UserNotFoundException()
-    if user_data_from_db.username is None or payload.password != user_data_from_db.password:
+    if not verify_password(payload.password, user.password):
+        logger.warning(f"Неверный пароль для пользователя: {payload.username}")
         raise UserNotFoundException()
-    access = create_access_token(user_data_from_db.id)
-    refresh = create_refresh_token(user_data_from_db.id)
-    return {"access": access, "refresh": refresh, "user_id": user_data_from_db.id}
+    access = create_access_token(user.id)
+    refresh = create_refresh_token(user.id)
+    logger.info(f"Успешный вход пользователя: {user.username} (ID: {user.id})")
+    return {"access": access, "refresh": refresh, "user_id": user.id}
 
 
 @user_router.post('/register', response_model=AccessRefreshToken)
 async def create_new_user(payload: LoginRegisterIn):
     """ Роут для регистрации пользователя """
-    user_db = await search_user_in_the_database(payload.username)
-    if not user_db:
-        user = await write_user_to_the_database(payload.username, payload.password)
+    logger.info(f"Попытка регистрации пользователя: {payload.username}")
+    user = await search_user_in_the_database(payload.username)
+    if not user:
+        hashed = get_password_hash(payload.password)
+        user = await write_user_to_the_database(payload.username, hashed)
         access = create_access_token(user.id)
         refresh = create_refresh_token(user.id)
-        return {"message": "User successfully created.", "access": access, "refresh": refresh, "user_id": user.id}
-    raise UserExists()
+        logger.info(f"Пользователь зарегистрирован: {user.username} (ID: {user.id})")
+        return {"access": access, "refresh": refresh, "user_id": user.id}
+    logger.warning(f"Попытка регистрации существующего пользователя: {payload.username}")
+    raise UserExistsException()
 
 
 @user_router.post("/refresh", response_model=AccessToken)
-async def refresh(token: dict):
+async def refresh(token: RefreshIn):
     """ Роут для получения refresh токенов """
+    logger.debug("Обновление access токена")
     try:
-        payload = jwt.decode(token.get("refresh"), settings.SECRET_KEY, algorithms=["HS256"])
+        payload = jwt.decode(token.refresh, settings.SECRET_KEY, algorithms=["HS256"])
         if payload.get("type") != "refresh":
-            raise Exception()
+            logger.warning("Попытка использовать не refresh токен")
+            raise InvalidRefreshTokenException()
         user_id = int(payload.get("sub"))
+        access = create_access_token(user_id)
+        logger.info(f"Access токен обновлен для пользователя: {user_id}")
+        return {"access": access}
     except jwt.ExpiredSignatureError:
+        logger.warning("Refresh токен истек")
         raise RefreshTokenExpiredException()
-    except Exception:
+    except Exception as ex:
+        logger.warning(f"Невалидный refresh токен: {type(ex).__name__}")
         raise InvalidRefreshTokenException()
-    access = create_access_token(user_id)
-    return {"access": access}
