@@ -35,7 +35,7 @@ async def shutdown_event():
 @app.get("/health")
 async def health_check():
     """Простой health check без внешних зависимостей"""
-    return {"status": "healthy", "service": "notification_service"}
+    return {"status": "healthy", "service": "NotifyService"}
 
 
 @app.get("/health/full")
